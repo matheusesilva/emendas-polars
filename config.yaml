@@ -1,0 +1,119 @@
+# --- CONFIGURAÇÕES GERAIS ---
+name: "Emendas_Parlamentares"
+description: "Pipeline de ingestão e processamento de dados de emendas parlamentares do Portal da Transparência"
+version: "1.0"
+storage:
+  raw: "data/00_raw"
+  bronze: "data/01_bronze"
+  silver: "data/02_silver"
+  gold: "data/03_gold"
+  logs: "logs"
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# --- DEFINIÇÃO DAS FONTES DE DADOS ---
+# Em schema cada coluna possui um format responsável por padronizar os dados e aplicar as devidas transformações para garantir a qualidade dos dados
+# O format é formado por CATEGORIA_ESTILO_TAMANHO, onde:
+# - Categoria: Define o tipo de dado
+#            - STR (texto)
+#            - NUM (número)
+#            - VAL (valor)
+#            - DAT (data)
+# - Estilo: Define o estilo de formatação
+#            - INITC (Todas iniciais maiúsculas)
+#            - SENTC (Apenas a primeira letra maiúscula)
+#            - UPPER (Todas as letras maiúsculas)
+#            - BRL (Formato de moeda brasileira)
+#            - DMY (Formato de data dia, mês e ano)
+#            - INT (Número inteiro, sem formatação)
+
+url: "https://dadosabertos-download.cgu.gov.br/PortalDaTransparencia/saida/emendas-parlamentares/EmendasParlamentares.zip"
+file_name: "EmendasParlamentares.zip"
+type: "zip"
+content:
+  EmendasParlamentares:
+    file_name: "EmendasParlamentares.csv"
+    type: "csv"
+    separator: ";"
+    encoding: "iso-8859-1"
+    invalid_values:
+      - "sem informação"
+      - "s/i"
+      - "-99"
+      - "-1"
+    schema:
+      - {name: "Código da Emenda", type: "string", format: "STR_INT"}
+      - {name: "Ano da Emenda", type: "string", format: "NUM_INT"}
+      - {name: "Tipo de Emenda", type: "string", format: "STR_INITC"}
+      - {name: "Código do Autor da Emenda", type: "string", format: "STR_INT"}
+      - {name: "Nome do Autor da Emenda", type: "string", format: "STR_INITC"}
+      - {name: "Número da emenda", type: "string", format: "STR_INT"}
+      - {name: "Localidade de aplicação do recurso", type: "string", format: "STR_INITC"}
+      - {name: "Código Município IBGE", type: "string", format: "STR_INT"}
+      - {name: "Município", type: "string", format: "STR_INITC"}
+      - {name: "Código UF IBGE", type: "string", format: "STR_INT"}
+      - {name: "UF", type: "string", format: "STR_INITC"}
+      - {name: "Região", type: "string", format: "STR_INITC"}
+      - {name: "Código Função", type: "string", format: "STR_INT"}
+      - {name: "Nome Função", type: "string", format: "STR_INITC"}
+      - {name: "Código Subfunção", type: "string", format: "STR_INT"}
+      - {name: "Nome Subfunção", type: "string", format: "STR_INITC"}
+      - {name: "Código Programa", type: "string", format: "STR_INT"}
+      - {name: "Nome Programa", type: "string", format: "STR_INITC"}
+      - {name: "Código Ação", type: "string", format: "STR_INT"}
+      - {name: "Nome Ação", type: "string", format: "STR_INITC"}
+      - {name: "Código Plano Orçamentário", type: "string", format: "STR_UPPER"}
+      - {name: "Nome Plano Orçamentário", type: "string", format: "STR_INITC"}
+      - {name: "Valor Empenhado", type: "string", format: "NUM_BRL"}
+      - {name: "Valor Liquidado", type: "string", format: "NUM_BRL"}
+      - {name: "Valor Pago", type: "string", format: "NUM_BRL"}
+      - {name: "Valor Restos A Pagar Inscritos", type: "string", format: "NUM_BRL"}
+      - {name: "Valor Restos A Pagar Cancelados", type: "string", format: "NUM_BRL"}
+      - {name: "Valor Restos A Pagar Pagos", type: "string", format: "NUM_BRL"}
+  EmendasParlamentares_Convenios:
+    file_name: "EmendasParlamentares_Convenios.csv"
+    type: "csv"
+    separator: ";"
+    encoding: "iso-8859-1"
+    invalid_values:
+      - "sem informação"
+      - "s/i"
+      - "-99"
+      - "-1"
+    schema:
+      - {name: "Código da Emenda", type: "string", format: "STR_INT"}
+      - {name: "Código Função", type: "string", format: "STR_INT"}
+      - {name: "Nome Função", type: "string", format: "STR_INITC"}
+      - {name: "Código Subfunção", type: "string", format: "STR_INT"}
+      - {name: "Nome Subfunção", type: "string", format: "STR_INITC"}
+      - {name: "Localidade do gasto", type: "string", format: "STR_INITC"}
+      - {name: "Tipo de Emenda", type: "string", format: "STR_INITC"}
+      - {name: "Data Publicação Convênio", type: "string", format: "DAT_dd/MM/yyyy"}
+      - {name: "Convenente", type: "string", format: "STR_INITC"}
+      - {name: "Objeto Convênio", type: "string", format: "STR_SENTC"}
+      - {name: "Número Convênio", type: "string", format: "STR_INT"}
+      - {name: "Valor Convênio", type: "string" , format: "NUM_BRL"}
+  EmendasParlamentares_PorFavorecido:
+    file_name: "EmendasParlamentares_PorFavorecido.csv"
+    separator: ";"
+    encoding: "iso-8859-1"
+    invalid_values:
+      - "sem informação"
+      - "s/i"
+      - "-99"
+      - "-1"
+    schema:
+      - {name: "Código da Emenda", type: "string", format: "STR_INT"}
+      - {name: "Código do Autor da Emenda", type: "string", format: "STR_INT"}
+      - {name: "Nome do Autor da Emenda", type: "string", format: "STR_INITC"}
+      - {name: "Número da emenda", type: "string", format: "STR_INT"}
+      - {name: "Tipo de Emenda", type: "string", format: "STR_INITC"}
+      - {name: "Ano/Mês", type: "string" , format: "STR_INT"}
+      - {name: "Código do Favorecido", type: "string", format: "STR_INT"}
+      - {name: "Favorecido", type: "string", format: "STR_INITC"}
+      - {name: "Natureza Jurídica", type: "string", format: "STR_INITC"}
+      - {name: "Tipo Favorecido", type: "string", format: "STR_INITC"}
+      - {name: "UF Favorecido", type: "string", format: "STR_UPPER"}
+      - {name: "Município Favorecido", type: "string", format: "STR_INITC"}
+      - {name: "Valor Recebido", type: "string" , format: "NUM_BRL"}
