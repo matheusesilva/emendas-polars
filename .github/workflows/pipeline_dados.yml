@@ -25,7 +25,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install polars duckdb
+        pip install polars duckdb requests
 
     - name: Run Data Pipeline
       run: python main.py
