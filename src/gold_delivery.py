@@ -16,11 +16,8 @@ def run_delivery(config: Config, logger: Logger, context: dict = None) -> None:
     close_connection(con)
 
 def create_connection(config: Config) -> duckdb.DuckDBPyConnection:
-    """Cria uma conexão com o DuckDB, utilizando um arquivo local para persistência."""
-
-    db_name = os.path.join(config.storage.gold, f"{config.name}.db")
-    con = duckdb.connect(database=db_name, read_only=False)
-    return con
+    """Cria uma conexão com um banco em memória."""
+    return duckdb.connect(database=':memory:')
 
 def close_connection(con: duckdb.DuckDBPyConnection):
     """Fecha a conexão com o DuckDB."""
