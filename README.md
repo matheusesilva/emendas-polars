@@ -129,6 +129,6 @@ emendas-polars/
 
 ---
 
-## Licença
+## Problemas Conhecidos
 
-MIT
+-**Firefox não carrega os dados:** O problema ocorre aparentemente porque o Firefox segue rigorosamente as especificações de rede: quando o DuckDB-Wasm solicita apenas um "pedaço" do arquivo Parquet (via Range Request), o GitHub Pages responde com o código 206 (Partial Content), mas inclui indevidamente um cabeçalho informando que o conteúdo está compactado com Gzip. O navegador, então, tenta descompactar esse fragmento isolado como se fosse um arquivo completo; como um "pedaço" de um arquivo zipado não possui a estrutura binária de um arquivo Gzip válido, o Firefox aborta a leitura por erro de codificação (Content Encoding Error), impedindo que os dados cheguem aos gráficos.
