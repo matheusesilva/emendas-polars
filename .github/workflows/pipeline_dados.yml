@@ -36,16 +36,12 @@ jobs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
         # Adiciona o ZIP da Raw e todos os Parquets das camadas Bronze, Silver e Gold
-        # Ajuste os caminhos abaixo conforme a sua estrutura real de pastas
-        git add data/00_raw/*.zip
-        git add data/01_bronze/*.parquet
-        git add data/02_silver/*.parquet
-        git add data/03_gold/*.parquet
+        git add -A data/
         
         # Verifica se houve mudanças para evitar erro no workflow
         if git diff --cached --quiet; then
           echo "Nenhuma mudança detectada nos dados."
         else
-          git commit -m "📊 Update Data Layers: $(date +'%d/%m/%Y %H:%M')"
+          git commit -m "update: Data Layers: $(date +'%d/%m/%Y %H:%M')"
           git push
         fi
