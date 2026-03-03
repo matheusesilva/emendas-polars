@@ -2,6 +2,8 @@
 
 Pipeline ETL de dados públicos de **emendas parlamentares** do [Portal da Transparência](https://portaldatransparencia.gov.br/), processado com **Polars** e entregue via **DuckDB**, com dashboard interativo publicado no **GitHub Pages** e atualizado diariamente via **GitHub Actions**.
 
+[**Live Dashboard:**](https://matheusesilva.github.io/emendas-polars/)
+
 ---
 
 ## Como usar
@@ -21,6 +23,8 @@ python main.py
 ---
 
 ## Pipeline ETL
+
+![Fluxograma Pipeline](img/flowchart.png)
 
 O pipeline é composto por quatro etapas executadas em sequência:
 
