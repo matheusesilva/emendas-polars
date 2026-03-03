@@ -23,7 +23,7 @@ def get_zip(config: Config, logger: Logger, context: dict = None) -> str:
     """Baixa o arquivo zip da URL definida no config e salva na pasta raw particionada por data."""
     
     url = config.url
-    file_name = f"{config.processing_date}_{config.file_name}"
+    file_name = config.file_name
     save_path = config.storage.raw
     zip_path = os.path.join(save_path, file_name)
 
