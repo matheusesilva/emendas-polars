@@ -84,24 +84,45 @@
 
     <script type="module">
         import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.1.1/+esm';
+        
+            let conn, chartAutores, chartUF;
+        
+            async function init() {
+                try {
+                    const MANUAL_BUNDLES = {
+                        mvp: {
+                            mainModule: 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.1.1/dist/duckdb-mvp.wasm',
+                            mainWorker: 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.1.1/dist/duckdb-browser-mvp.worker.js',
+                        },
+                        eh: {
+                            mainModule: 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.1.1/dist/duckdb-eh.wasm',
+                            mainWorker: 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.1.1/dist/duckdb-browser-eh.worker.js',
+                        },
+                    };
+                    const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
 
-        let conn, chartAutores, chartUF;
-
-        async function init() {
-            const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
-            const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
-            const worker = new Worker(URL.createObjectURL(new Blob([`importScripts("${bundle.mainWorker}");`], {type: 'text/javascript'})));
-            const db = new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(), worker);
-            await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
-            conn = await db.connect();
-
-            const root = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            await db.registerFileURL('fato.parquet', new URL('data/03_gold/fato_execucao_orcamentaria.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, false);
-            await db.registerFileURL('autor.parquet', new URL('data/03_gold/dim_autor.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, false);
-            await db.registerFileURL('local.parquet', new URL('data/03_gold/dim_localidade.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, false);
-
-            updateDashboard();
-        }
+                    const worker = new Worker(bundle.mainWorker);
+                    const logger = new duckdb.ConsoleLogger();
+                    const db = new duckdb.AsyncDuckDB(logger, worker);
+                    
+                    // Instancia o banco
+                    await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+                    
+                    conn = await db.connect();
+                    console.log("DuckDB-Wasm Conectado com sucesso!");
+        
+                    // Localização dos arquivos no GitHub Pages
+                    const root = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+                    
+                    await db.registerFileURL('fato_gold', new URL('data/03_gold/fato_execucao_orcamentaria.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, false);
+                    await db.registerFileURL('dim_autor', new URL('data/03_gold/dim_autor.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, false);
+                    await db.registerFileURL('dim_localidade', new URL('data/03_gold/dim_localidade.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, false);
+        
+                    updateDashboard();
+                } catch (e) {
+                    console.error("Erro crítico na inicialização do DuckDB:", e);
+                }
+            }
 
         async function updateDashboard() {
             const ano = document.getElementById('select-ano').value;
