@@ -96,9 +96,9 @@
             conn = await db.connect();
 
             const root = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            await db.registerFileURL('fato.parquet', new URL('data/03_gold/fato_execucao_orcamentaria.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, false);
-            await db.registerFileURL('autor.parquet', new URL('data/03_gold/dim_autor.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, false);
-            await db.registerFileURL('local.parquet', new URL('data/03_gold/dim_localidade.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, false);
+            await db.registerFileURL('fato.parquet', new URL('data/03_gold/fato_execucao_orcamentaria.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, true);
+            await db.registerFileURL('autor.parquet', new URL('data/03_gold/dim_autor.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, true);
+            await db.registerFileURL('local.parquet', new URL('data/03_gold/dim_localidade.parquet', root).href, duckdb.DuckDBDataProtocol.HTTP, true);
 
             updateDashboard();
         }
