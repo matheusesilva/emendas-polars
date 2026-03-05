@@ -36,6 +36,9 @@ jobs:
         
         # Adiciona o ZIP da Raw e todos os Parquets das camadas Bronze, Silver e Gold
         git add -A data/
+
+        # Adiciona logs
+        git add logs/log.jsonl
         
         # Verifica se houve mudanças para evitar erro no workflow
         if git diff --cached --quiet; then
