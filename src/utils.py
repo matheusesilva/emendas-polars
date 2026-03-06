@@ -1,3 +1,4 @@
+import os
 import uuid
 import json
 import time
@@ -136,7 +137,6 @@ class Config:
     
     def build_polars_schema(self, table_name: str) -> dict:
         """Constrói um schema do Polars a partir da definição de schema no YAML."""
-        import polars as pl
         type_mapper = {
             "string": pl.Utf8,
             "integer": pl.Int64,
@@ -218,6 +218,7 @@ def get_logger(config: Config) -> logging.Logger:
     name = getattr(config, 'name', 'ETL_Pipeline')
     logger = logging.getLogger(name)
     if not logger.hasHandlers():
+        os.makedirs(config.storage.logs, exist_ok=True)
         level = getattr(logging, config.logging.level.upper(), logging.INFO)
         handler = logging.StreamHandler()
         file_handler = logging.FileHandler(f"{config.storage.logs}/{name}.jsonl")
